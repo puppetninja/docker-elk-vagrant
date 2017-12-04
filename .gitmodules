@@ -1,0 +1,4 @@
+[submodule "docker-elk"]
+	path = docker-elk
+	url = https://github.com/PuppetNinja/docker-elk.git
+	branch = rsyslog
