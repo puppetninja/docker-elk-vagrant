@@ -26,6 +26,7 @@ Vagrant.configure("2") do |config|
 
     yum install -y epel-release
     yum install -y python2-pip
+    pip install -U pip
     pip install docker-compose
 
     systemctl enable docker
