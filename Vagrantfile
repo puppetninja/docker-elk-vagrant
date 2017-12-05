@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
         --add-repo \
             https://download.docker.com/linux/centos/docker-ce.repo
     yum-config-manager --enable docker-ce-edge
-    yum install docker-ce
+    yum install -y docker-ce
 
     yum install -y epel-release
     yum install -y python2-pip
