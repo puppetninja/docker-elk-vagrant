@@ -55,8 +55,8 @@ Vagrant.configure("2") do |config|
       systemctl restart rsyslog
 
       echo '#!/bin/bash' > /usr/local/bin/logger-test
-      echo 'while sleep 2; do echo thinking; done' >> /usr/local/bin/logger-test
-      chmod 755 /usr/loca/bin/logger-test
+      echo 'while sleep 2; do logger elk test log message; done' >> /usr/local/bin/logger-test
+      chmod 755 /usr/local/bin/logger-test
     SHELL
   end
 end
