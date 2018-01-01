@@ -47,8 +47,12 @@ Vagrant.configure("2") do |config|
     end
 
     client.vm.provision "shell", inline: <<-SHELL
+      touch /etc/rsyslog.d/log-upload.conf
+      touch /usr/local/bin/logger-test
+
       yum install -y rsyslog
-      echo '*.* @@192.168.100.10:514' >> /etc/rsyslog.conf
+      echo '*.* @@192.168.100.10:514' >> /etc/rsyslog.d/log-upload.conf
+      systemctl restart rsyslog
 
       echo '#!/bin/bash' > /usr/local/bin/logger-test
       echo 'while sleep 2; do echo thinking; done' >> /usr/local/bin/logger-test
