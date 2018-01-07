@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "elk-server" do |server|
     server.vm.hostname = "elk-server"
     server.vm.network "private_network", ip: "#{$log_server_ip}"
-    server.vm.synced_folder "docker-elk", "/opt/docker-elk"
+    server.vm.synced_folder "docker-elk", "/opt/docker-elk-rsyslog"
 
     server.vm.provider "virtualbox" do |vb|
       vb.cpus = 2
@@ -35,6 +35,13 @@ Vagrant.configure("2") do |config|
       systemctl enable docker
       systemctl start docker
     SHELL
+
+    server.vm.provision "file", source: "utils/server/systemd/docker-elk-rsyslog.service", destination: "/etc/systemd/system/docker-elk-rsyslog.service"
+
+    server.vm.provision "shell", inline: <<-SHELL
+      systemctl enable docker-elk-rsyslog
+      systemctl start docker-elk-rsyslog
+    SHELL
   end
 
   config.vm.define "elk-client" do |client|
@@ -46,17 +53,12 @@ Vagrant.configure("2") do |config|
       vb.memory = "1024"
     end
 
-    client.vm.provision "shell", inline: <<-SHELL
-      touch /etc/rsyslog.d/log-upload.conf
-      touch /usr/local/bin/logger-test
-
-      yum install -y rsyslog
       echo '*.* @@192.168.100.10:514' >> /etc/rsyslog.d/log-upload.conf
-      systemctl restart rsyslog
 
-      echo '#!/bin/bash' > /usr/local/bin/logger-test
-      echo 'while sleep 2; do logger elk test log message; done' >> /usr/local/bin/logger-test
-      chmod 755 /usr/local/bin/logger-test
-    SHELL
+    server.vm.provision "file", source: "utils/client/logger-test", destination: "/usr/local/bin/logger-test"
+    server.vm.provision "shell", inline: "chmod 755 /usr/local/bin/logger-test"
+
+    server.vm.provision "file", source: "utils/99-log-upload.conf", destination: "/etc/rsyslog.d/99-log-upload.conf"
+    client.vm.provision "shell", inline: "systemctl start rsyslog"
   end
 end

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+while sleep 2; do logger elk test log message; done
