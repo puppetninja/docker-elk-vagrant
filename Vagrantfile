@@ -36,9 +36,10 @@ Vagrant.configure("2") do |config|
       systemctl start docker
     SHELL
 
-    server.vm.provision "file", source: "utils/server/systemd/docker-elk-rsyslog.service", destination: "/etc/systemd/system/docker-elk-rsyslog.service"
+    server.vm.provision "file", source: "utils/server/systemd/docker-elk-rsyslog.service", destination: "/tmp/docker-elk-rsyslog.service"
 
     server.vm.provision "shell", inline: <<-SHELL
+      mv /tmp/docker-elk-rsyslog.service /etc/systemd/system/docker-elk-rsyslog.service
       systemctl enable docker-elk-rsyslog
       systemctl start docker-elk-rsyslog
     SHELL
@@ -53,10 +54,16 @@ Vagrant.configure("2") do |config|
       vb.memory = "1024"
     end
 
-    client.vm.provision "file", source: "utils/client/logger-test", destination: "/usr/local/bin/logger-test"
-    client.vm.provision "shell", inline: "chmod 755 /usr/local/bin/logger-test"
+    client.vm.provision "file", source: "utils/client/logger-test", destination: "/tmp/logger-test"
+    client.vm.provision "shell", inline: <<-SHELL
+      mv /tmp/logger-test /usr/local/bin/logger-test
+      chmod 755 /usr/local/bin/logger-test
+    SHELL
 
-    client.vm.provision "file", source: "utils/99-log-upload.conf", destination: "/etc/rsyslog.d/99-log-upload.conf"
-    client.vm.provision "shell", inline: "systemctl start rsyslog"
+    client.vm.provision "file", source: "utils/client/rsyslog/99-log-upload.conf", destination: "/tmp/99-log-upload.conf"
+    client.vm.provision "shell", inline: <<-SHELL
+      mv /tmp/99-log-upload.conf /etc/rsyslog.d/99-log-upload.conf
+      systemctl start rsyslog
+    SHELL
   end
 end

@@ -8,13 +8,13 @@ WorkingDirectory=/opt/docker-elk-rsyslog
 Type=oneshot
 RemainAfterExit=yes
 
-ExecStartPre=/usr/local/bin/docker-compose pull --quiet --parallel
-ExecStart=/usr/local/bin/docker-compose -f docker-compose.yml -f extensions/rsyslog/rsyslog-compose.yml up -d
+ExecStartPre=/usr/bin/docker-compose pull --quiet --parallel
+ExecStart=/usr/bin/docker-compose -f docker-compose.yml -f extensions/rsyslog/rsyslog-compose.yml up -d
 
-ExecStop=/usr/local/bin/docker-compose -f docker-compose.yml -f extensions/rsyslog/rsyslog-compose.yml down
+ExecStop=/usr/bin/docker-compose -f docker-compose.yml -f extensions/rsyslog/rsyslog-compose.yml down
 
-ExecReload=/usr/local/bin/docker-compose pull --quiet --parallel
-ExecReload=/usr/local/bin/docker-compose -f docker-compose.yml -f extensions/rsyslog/rsyslog-compose.yml up -d
+ExecReload=/usr/bin/docker-compose pull --quiet --parallel
+ExecReload=/usr/bin/docker-compose -f docker-compose.yml -f extensions/rsyslog/rsyslog-compose.yml up -d
 
 [Install]
 WantedBy=multi-user.target
