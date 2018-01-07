@@ -53,12 +53,10 @@ Vagrant.configure("2") do |config|
       vb.memory = "1024"
     end
 
-      echo '*.* @@192.168.100.10:514' >> /etc/rsyslog.d/log-upload.conf
+    client.vm.provision "file", source: "utils/client/logger-test", destination: "/usr/local/bin/logger-test"
+    client.vm.provision "shell", inline: "chmod 755 /usr/local/bin/logger-test"
 
-    server.vm.provision "file", source: "utils/client/logger-test", destination: "/usr/local/bin/logger-test"
-    server.vm.provision "shell", inline: "chmod 755 /usr/local/bin/logger-test"
-
-    server.vm.provision "file", source: "utils/99-log-upload.conf", destination: "/etc/rsyslog.d/99-log-upload.conf"
+    client.vm.provision "file", source: "utils/99-log-upload.conf", destination: "/etc/rsyslog.d/99-log-upload.conf"
     client.vm.provision "shell", inline: "systemctl start rsyslog"
   end
 end
