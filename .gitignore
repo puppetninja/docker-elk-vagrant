@@ -1,1 +1,2 @@
 .vagrant
+docker-elk/extensions/rsyslog/logs/*

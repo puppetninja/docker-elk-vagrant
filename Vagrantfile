@@ -60,10 +60,13 @@ Vagrant.configure("2") do |config|
       chmod 755 /usr/local/bin/logger-test
     SHELL
 
+    client.vm.provision "shell", inline: "yum install -y rsyslog"
     client.vm.provision "file", source: "utils/client/rsyslog/99-log-upload.conf", destination: "/tmp/99-log-upload.conf"
     client.vm.provision "shell", inline: <<-SHELL
       mv /tmp/99-log-upload.conf /etc/rsyslog.d/99-log-upload.conf
+      systemctl enable rsyslog
       systemctl start rsyslog
+      systemctl reload rsyslog
     SHELL
   end
 end
