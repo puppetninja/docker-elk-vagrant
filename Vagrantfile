@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
     end
 
     server.vm.provision "shell", inline: <<-SHELL
-      yum install -y yum-utils device-mapper-persistent-data lvm2
+      yum install -y yum-utils device-mapper-persistent-data lvm2 vim
 
       yum-config-manager \
           --add-repo \
