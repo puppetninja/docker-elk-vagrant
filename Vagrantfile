@@ -43,6 +43,8 @@ Vagrant.configure("2") do |config|
       systemctl enable docker-elk-rsyslog
       systemctl start docker-elk-rsyslog
     SHELL
+
+    server.vm.provision "shell", inline: "sed -i \"s/localhost/#{$log_server_ip}/\" /opt/docker-elk-rsyslog/extensions/rsyslog/config/rsyslog.d/60-logstash.conf"
   end
 
   config.vm.define "elk-client" do |client|
@@ -66,7 +68,6 @@ Vagrant.configure("2") do |config|
       mv /tmp/99-log-upload.conf /etc/rsyslog.d/99-log-upload.conf
       systemctl enable rsyslog
       systemctl start rsyslog
-      systemctl reload rsyslog
     SHELL
   end
 end
